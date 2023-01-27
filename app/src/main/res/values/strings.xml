@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">GitHubStars</string>
+    <string name="app_name" translatable="false">GitHubStars</string>
+
+    <string name="error_message_empty_username">Please, enter username</string>
+    <string name="error_message_no_internet">No internet connection</string>
+    <string name="error_message_user_not_found">Check username, please</string>
+    <string name="error_message_limit_exceeded">Request limit exceeded</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="button_search">Search</string>
+    <string name="editText_hint">Enter username</string>
+
+    <string name="adapter_textview_item" translatable="false">Repo</string>
 </resources>

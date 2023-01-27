@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_message_empty_username">Пожалуйста, введите имя пользователя</string>
+    <string name="error_message_no_internet">Нет соединения с интернетом</string>
+    <string name="error_message_user_not_found">Пожалуйста, проверьте имя пользователя</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="button_search">Поиск</string>
+    <string name="editText_hint">Введите имя пользователя</string>
+    <string name="error_message_limit_exceeded">Превышен лимит запросов</string>
+</resources>
