@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_message_empty_username">Пожалуйста, введите имя пользователя</string>
+    <string name="error_message_no_internet">Нет соединения с интернетом</string>
+    <string name="error_message_user_not_found">Пожалуйста, проверьте имя пользователя</string>
+    <string name="empty_list">Нет данных для графика</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="button_search">Поиск</string>
+    <string name="editText_hint">Введите имя пользователя</string>
+    <string name="error_message_limit_exceeded">Превышен лимит запросов</string>
+    <string name="button_graph_year">Год</string>
+    <string name="button_graph_month">Месяц</string>
+    <string name="button_graph_week">Неделя</string>
+    <string name="number_of_week">Неделя</string>
+    <string name="description_number_year">Месяц года</string>
+    <string name="description_number_month">Неделя месяца</string>
+    <string name="description_number_week">День недели</string>
+    <string name="button_graph_seasons">Сезоны</string>
+    <string name="description_number_seasons">Сезон</string>
+    <string-array name="xAxis_seasons">
+        <item>Зима</item>
+        <item>Весна</item>
+        <item>Лето</item>
+        <item>Осень</item>
+        <item>Зима</item>
+        <item>Зима</item>
+    </string-array>
+</resources>
