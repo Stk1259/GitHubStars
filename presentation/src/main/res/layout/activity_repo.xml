@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ui.repoScreen.RepoActivity">
+    tools:context="ui.repo_screen.RepoActivity">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/textInputUsername"

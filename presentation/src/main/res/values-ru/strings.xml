@@ -25,4 +25,6 @@
         <item>Зима</item>
         <item>Зима</item>
     </string-array>
+    <string name="notification_stars_added">Звезд добавилось:</string>
+    <string name="notification_stars_decreased">Звезд уменьшилось:</string>
 </resources>

@@ -1,15 +1,19 @@
 package ui.repo_screen
 
 import android.annotation.SuppressLint
+import android.media.Image
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 import com.example.githubstars.R
 import com.omega_r.libs.omegarecyclerview.OmegaRecyclerView
 import com.omega_r.libs.omegarecyclerview.pagination.PaginationViewCreator
-import domain.entity.Repo
-import domain.entity.RepoList
+import domain.data.Repo
+import domain.data.RepoList
 
 
 class RepoRecyclerAdapter : OmegaRecyclerView.Adapter<RepoRecyclerAdapter.ViewHolder>(),
@@ -21,8 +25,8 @@ class RepoRecyclerAdapter : OmegaRecyclerView.Adapter<RepoRecyclerAdapter.ViewHo
             field = value
             notifyDataSetChanged()
         }
-    var onItemClick: ((Repo) -> Unit?)? = null
-
+    var onImageClick: ((Repo) -> Unit?)? = null
+    var onTextClick: ((Repo) -> Unit?)? = null
     init {
         setHasStableIds(true)
     }
@@ -37,9 +41,33 @@ class RepoRecyclerAdapter : OmegaRecyclerView.Adapter<RepoRecyclerAdapter.ViewHo
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val names = list[position]
         holder.textRepos.text = names.repoName
-        holder.itemView.setOnClickListener {
-            onItemClick?.invoke(names)
+        holder.textRepos.setOnClickListener {
+            onTextClick?.invoke(names)
         }
+
+        fun fullStar(){
+            holder.imageStar.setImageResource(R.drawable.full_star_icon)
+            holder.imageStar.alpha = 1.0f
+        }
+        fun emptyStar(){
+            holder.imageStar.setImageResource(R.drawable.empty_star_icon)
+            holder.imageStar.alpha = 0.3f
+        }
+        if (names.favouriteStatus)
+        {fullStar()}
+        else
+        {emptyStar()}
+        holder.imageStar.setOnClickListener{
+            onImageClick?.invoke(names)
+            if (names.favouriteStatus){
+                names.favouriteStatus = false
+                emptyStar()
+            }else{
+                names.favouriteStatus = true
+                fullStar()
+            }
+        }
+
     }
 
     fun addValues(repoResponse: RepoList) {
@@ -61,7 +89,8 @@ class RepoRecyclerAdapter : OmegaRecyclerView.Adapter<RepoRecyclerAdapter.ViewHo
 
     inner class ViewHolder(itemView: View) :
         OmegaRecyclerView.ViewHolder(itemView) {
-        val textRepos = itemView.findViewById<TextView>(R.id.textRepos)!!
+        val textRepos = itemView.findViewById<TextView>(R.id.text_repos)!!
+        val imageStar: ImageView = itemView.findViewById(R.id.image_star)
     }
 
     override fun createPaginationView(parent: ViewGroup?, inflater: LayoutInflater?): View? {

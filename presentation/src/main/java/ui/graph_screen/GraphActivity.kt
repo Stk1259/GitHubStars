@@ -1,6 +1,5 @@
 package ui.graph_screen
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -10,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import com.example.githubstars.R
 import com.github.mikephil.charting.charts.BarChart
@@ -17,21 +17,25 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import domain.entity.GraphList
-import domain.entity.period_state.PeriodState
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import domain.data.FormattedStar
+import domain.data.StarList
+import domain.data.period_state.PeriodState
 import moxy.ktx.moxyPresenter
 import ui.base.BaseActivity
-import java.util.*
+import ui.repo_screen.RepoActivity
+import ui.stargazers_screen.StargazersActivity
 
 
-@SuppressLint("StaticFieldLeak")
-
-class GraphActivity : BaseActivity(), GraphView {
+class GraphActivity : BaseActivity(), GraphView, OnChartValueSelectedListener {
 
     private val graphPresenter by moxyPresenter {
         GraphPresenter(
+            this,
             intent.getStringExtra(EXTRA_USERNAME)!!,
             intent.getStringExtra(EXTRA_REPO_NAME)!!,
             intent.getIntExtra(EXTRA_STARGAZERS_COUNT, 0)
@@ -50,6 +54,8 @@ class GraphActivity : BaseActivity(), GraphView {
 
     private lateinit var stateButton: Button
 
+    private lateinit var graphResponse: StarList
+
     companion object {
         private const val EXTRA_USERNAME = "userName"
         private const val EXTRA_REPO_NAME = "repoName"
@@ -60,7 +66,13 @@ class GraphActivity : BaseActivity(), GraphView {
             PeriodState.MONTH to R.string.button_graph_month,
             PeriodState.WEEK to R.string.button_graph_week
         )
-        fun createIntent(context: Context, userName: String, repoName: String, stargazersCount: Int): Intent {
+
+        fun createIntent(
+            context: Context,
+            userName: String,
+            repoName: String,
+            stargazersCount: Int,
+        ): Intent {
             return Intent(context, GraphActivity::class.java)
                 .putExtra(EXTRA_USERNAME, userName)
                 .putExtra(EXTRA_REPO_NAME, repoName)
@@ -89,7 +101,8 @@ class GraphActivity : BaseActivity(), GraphView {
         }
     }
 
-    override fun showGraph(periodState: PeriodState, graphResponse: GraphList) {
+    override fun showGraph(periodState: PeriodState, graphResponse: StarList) {
+        this.graphResponse = graphResponse
         barEntriesList = mutableListOf()
         graphResponse.starsInPeriod.forEach { (t, u) ->
             barEntriesList.add(
@@ -154,6 +167,7 @@ class GraphActivity : BaseActivity(), GraphView {
         barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         barChart.notifyDataSetChanged()
         barChart.invalidate()
+        barChart.setOnChartValueSelectedListener(this)
     }
 
     override fun setLoading(loading: Boolean) {
@@ -169,6 +183,19 @@ class GraphActivity : BaseActivity(), GraphView {
 
     override fun setPeriodState(state: PeriodState) {
         stateButton.setText(stateTextMap[state]!!)
+    }
+
+    override fun onValueSelected(e: Entry?, h: Highlight?) {
+        val xSelected = e!!.x.toInt()
+        startActivity(
+            StargazersActivity.createIntent(
+                this,
+                graphResponse.starsInPeriod[xSelected] as ArrayList<FormattedStar>
+            )
+        )
+    }
+
+    override fun onNothingSelected() {
     }
 }
 

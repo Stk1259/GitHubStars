@@ -1,14 +1,14 @@
 package ui.graph_screen
 
-import domain.entity.GraphList
-import domain.entity.period_state.PeriodState
+import domain.data.StarList
+import domain.data.period_state.PeriodState
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import ui.base.BaseView
 
 interface GraphView : BaseView {
     @AddToEndSingle
-    fun showGraph(periodState: PeriodState, graphResponse: GraphList)
+    fun showGraph(periodState: PeriodState, graphResponse: StarList)
 
     @AddToEndSingle
     fun setLoading(loading: Boolean)

@@ -9,9 +9,8 @@
     <string name="error_unknown">Unknown error</string>
     <string name="button_search">Search</string>
     <string name="editText_hint">Enter username</string>
-
     <string name="adapter_textview_item" translatable="false">Repo</string>
-
+    <string name="user_name_text" translatable="false">User</string>
     <string name="button_graph_year">Year</string>
     <string name="button_graph_seasons">Seasons</string>
     <string name="button_graph_month">Month</string>
@@ -29,4 +28,6 @@
         <item>Winter</item>
         <item>Winter</item>
     </string-array>
+    <string name="notification_stars_added">Stars added:</string>
+    <string name="notification_stars_decreased">Stars decreased:</string>
 </resources>

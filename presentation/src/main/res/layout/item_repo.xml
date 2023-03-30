@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,10 +8,21 @@
     android:focusable="true">
 
     <TextView
-        android:id="@+id/textRepos"
+        android:id="@+id/text_repos"
         android:textSize="20sp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginTop="0dp"
+        android:layout_weight="8"
         android:text="@string/adapter_textview_item" />
+
+    <ImageView
+        android:id="@+id/image_star"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="2"
+        android:alpha="0.3"
+        app:srcCompat="@drawable/empty_star_icon" />
+
 </LinearLayout>

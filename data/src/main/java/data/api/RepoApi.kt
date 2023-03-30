@@ -1,8 +1,9 @@
 package data.api
 
 
-import data.remote.GraphRemoteData
-import data.remote.RepoRemoteData
+import data.remote.ExactRepo
+import data.remote.RemoteStar
+import data.remote.RemoteRepo
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
@@ -25,7 +26,13 @@ interface GithubApiService {
         @Path("username") userName: String,
         @Query("page") pageList: Int,
         @Query("per_page") PER_PAGE: Int,
-    ): List<RepoRemoteData>
+    ): List<RemoteRepo>
+
+    @GET("/repos/{owner}/{repo}")
+    suspend fun getExactRepo(
+        @Path("owner") userName: String,
+        @Path("repo") repoName: String
+    ): ExactRepo
 
     @GET("repos/{owner}/{repo}/stargazers")
     suspend fun getStars(
@@ -34,7 +41,7 @@ interface GithubApiService {
         @Query("page") pageAmount: Int,
         @Query("per_page") PER_PAGE: Int,
         @Header("accept") header: String = "application/vnd.github.star+json",
-    ): MutableList<GraphRemoteData>
+    ): MutableList<RemoteStar>
 }
 
 

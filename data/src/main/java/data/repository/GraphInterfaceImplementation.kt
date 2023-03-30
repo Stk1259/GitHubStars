@@ -1,8 +1,7 @@
 package data.repository
 
-import android.util.Log
-import data.remote.FormattedGraphData
-import data.remote.GraphRemoteList
+import data.remote.FormattedRemoteStar
+import data.remote.RemoteStarsList
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
@@ -12,19 +11,18 @@ import java.util.*
 object Year : GraphRepositoryInterface {
     override fun filterStars(
         comparableDate: LocalDate,
-        localStarData: MutableList<FormattedGraphData>,
-    ): GraphRemoteList {
-        val starsInPeriod = mutableMapOf<Int, MutableList<FormattedGraphData>>()
+        localStarData: MutableList<FormattedRemoteStar>,
+    ): RemoteStarsList {
+        val starsInPeriod = mutableMapOf<Int, MutableList<domain.data.FormattedStar>>()
         val calendar = Calendar.getInstance()
         val legend = mutableListOf<LocalDate>()
         legend.add(comparableDate)
-        val filteredLocalStarDate = localStarData.filter { it.starDate.year == comparableDate.year }
+        val filteredLocalStarDate = localStarData.filter { it.date.year == comparableDate.year }
         for (k in 1..calendar.getMaximum(Calendar.MONTH) + 1) {
             starsInPeriod[k] =
-                filteredLocalStarDate.filter { it.starDate.monthValue == k }.toMutableList()
+                filteredLocalStarDate.filter { it.date.monthValue == k }.toMutableList()
         }
-        Log.d("starsInPeriod", starsInPeriod.toString())
-        return GraphRemoteList(starsInPeriod, legend)
+        return RemoteStarsList(starsInPeriod, legend)
     }
 
     override fun checkForUpdate(comparableDate: LocalDate): Boolean {
@@ -44,19 +42,18 @@ object Seasons : GraphRepositoryInterface {
 
     override fun filterStars(
         comparableDate: LocalDate,
-        localStarData: MutableList<FormattedGraphData>,
-    ): GraphRemoteList {
-        val starsInPeriod = mutableMapOf<Int, MutableList<FormattedGraphData>>()
+        localStarData: MutableList<FormattedRemoteStar>,
+    ): RemoteStarsList {
+        val starsInPeriod = mutableMapOf<Int, MutableList<domain.data.FormattedStar>>()
         val legend = mutableListOf<LocalDate>()
         legend.add(comparableDate)
-        val filteredLocalStarDate = localStarData.filter { it.starDate.year == comparableDate.year }
+        val filteredLocalStarDate = localStarData.filter { it.date.year == comparableDate.year }
         for (k in 1..listOfSeasons.size) {
             starsInPeriod[k] =
-                filteredLocalStarDate.filter { listOfSeasons[k - 1].contains(it.starDate.month) }
+                filteredLocalStarDate.filter { listOfSeasons[k - 1].contains(it.date.month) }
                     .toMutableList()
         }
-        Log.d("starsInPeriod", starsInPeriod.toString())
-        return GraphRemoteList(starsInPeriod, legend)
+        return RemoteStarsList(starsInPeriod, legend)
     }
 
     override fun checkForUpdate(comparableDate: LocalDate): Boolean {
@@ -68,9 +65,9 @@ object Seasons : GraphRepositoryInterface {
 object Month : GraphRepositoryInterface {
     override fun filterStars(
         comparableDate: LocalDate,
-        localStarData: MutableList<FormattedGraphData>,
-    ): GraphRemoteList {
-        val starsInPeriod = mutableMapOf<Int, MutableList<FormattedGraphData>>()
+        localStarData: MutableList<FormattedRemoteStar>
+    ): RemoteStarsList {
+        val starsInPeriod = mutableMapOf<Int, MutableList<domain.data.FormattedStar>>()
         val legend = mutableListOf<LocalDate>()
         val calendar = Calendar.getInstance()
         calendar.set(
@@ -94,7 +91,7 @@ object Month : GraphRepositoryInterface {
         var key = 1
         while (calendarStartWeek < lastDayOfMonth) {
             starsInPeriod[key] = localStarData.filter {
-                it.starDate < calendarEndWeek && (it.starDate >= calendarStartWeek)
+                it.date < calendarEndWeek && (it.date >= calendarStartWeek)
             }.toMutableList()
             key += 1
             endPeriodForLegend = calendarEndWeek
@@ -102,8 +99,7 @@ object Month : GraphRepositoryInterface {
             calendarStartWeek = calendarStartWeek.plusWeeks(1)
         }
         legend.add(0, endPeriodForLegend)
-        Log.d("starsInPeriod", starsInPeriod.toString())
-        return GraphRemoteList(starsInPeriod, legend)
+        return RemoteStarsList(starsInPeriod, legend)
     }
 
     override fun checkForUpdate(comparableDate: LocalDate): Boolean {
@@ -115,9 +111,9 @@ object Month : GraphRepositoryInterface {
 object Week : GraphRepositoryInterface {
     override fun filterStars(
         comparableDate: LocalDate,
-        localStarData: MutableList<FormattedGraphData>,
-    ): GraphRemoteList {
-        val starsInPeriod = mutableMapOf<Int, MutableList<FormattedGraphData>>()
+        localStarData: MutableList<FormattedRemoteStar>,
+    ): RemoteStarsList {
+        val starsInPeriod = mutableMapOf<Int, MutableList<domain.data.FormattedStar>>()
         val legend = mutableListOf<LocalDate>()
         val calendar = Calendar.getInstance()
         calendar.set(
@@ -132,13 +128,12 @@ object Week : GraphRepositoryInterface {
         legend.add(calendarStartWeek)
         for (k in 1..calendar.getMaximum(Calendar.DAY_OF_WEEK)) {
             starsInPeriod[k] = localStarData.filter {
-                it.starDate == calendarStartWeek
+                it.date == calendarStartWeek
             }.toMutableList()
             calendarStartWeek = calendarStartWeek.plusDays(1)
         }
         legend.add(0, calendarStartWeek)
-        Log.d("starsInPeriod", starsInPeriod.toString())
-        return GraphRemoteList(starsInPeriod, legend)
+        return RemoteStarsList(starsInPeriod, legend)
     }
 
     override fun checkForUpdate(comparableDate: LocalDate): Boolean {

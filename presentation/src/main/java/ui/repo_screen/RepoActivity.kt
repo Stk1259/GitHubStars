@@ -13,14 +13,17 @@ import com.example.githubstars.R
 import com.google.android.material.textfield.TextInputEditText
 import com.omega_r.libs.omegarecyclerview.OmegaRecyclerView
 import com.omega_r.libs.omegarecyclerview.pagination.OnPageRequestListener
-import domain.entity.RepoList
+import domain.data.RepoList
 import moxy.ktx.moxyPresenter
+import notifications.SetAlarm
 import ui.base.BaseActivity
 import ui.graph_screen.GraphActivity
 
 
 class RepoActivity : BaseActivity(), RepoView, OnPageRequestListener {
+//    private val notificationReceiver = NotificationReceiver()
     private val repoPresenter by moxyPresenter { RepoPresenter() }
+    private val setAlarm = SetAlarm()
     private lateinit var repoAdapter: RepoRecyclerAdapter
     private lateinit var progressBar: ProgressBar
     private lateinit var userName: String
@@ -28,7 +31,7 @@ class RepoActivity : BaseActivity(), RepoView, OnPageRequestListener {
     private var listPage: Int = 0
 
     companion object {
-        fun createIntent(context: Context, ): Intent {
+        fun createIntent(context: Context): Intent {
             return Intent(context, RepoActivity::class.java)
         }
     }
@@ -36,6 +39,10 @@ class RepoActivity : BaseActivity(), RepoView, OnPageRequestListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repo)
+//        val filter = IntentFilter().apply {
+//            addAction("com.example.ACTION_ALARM")
+//        }
+//        registerReceiver(notificationReceiver, filter)
         val textInput = findViewById<TextInputEditText>(R.id.textInputUsername)
         progressBar = findViewById(R.id.progressBarStartActivity)
         recycler = findViewById(R.id.repos_recycler_view)
@@ -50,7 +57,7 @@ class RepoActivity : BaseActivity(), RepoView, OnPageRequestListener {
             hideKeyBoard()
             repoAdapter.list = emptyList()
             userName = textInput.text.toString()
-            repoPresenter.loadRepos(userName, listPage)
+            repoPresenter.loadRepos(userName, listPage, this)
         }
     }
 
@@ -63,8 +70,28 @@ class RepoActivity : BaseActivity(), RepoView, OnPageRequestListener {
         if (repoResponse.nextPageStatus) {
             recycler.showProgressPagination()
         } else recycler.hidePagination()
-        repoAdapter.onItemClick = {
-            startActivity(GraphActivity.createIntent(this, userName, it.repoName, it.stargazersCount))
+        repoAdapter.onTextClick = {
+            startActivity(
+                GraphActivity.createIntent(
+                    this,
+                    userName,
+                    it.repoName,
+                    it.stargazersCount
+                )
+            )
+        }
+
+        repoAdapter.onImageClick = {
+            if (!it.favouriteStatus) {
+                repoPresenter.addFavouriteRepo(
+                    this,
+                    it.repoName,
+                )
+                    setAlarm.setAlarm(this)
+
+            } else {
+                repoPresenter.deleteFavouriteRepo(this, it.id)
+            }
         }
     }
 
@@ -79,10 +106,9 @@ class RepoActivity : BaseActivity(), RepoView, OnPageRequestListener {
     override fun onPageRequest(page: Int) {
         loadMoreRepos()
     }
-
     private fun loadMoreRepos() {
         listPage += 1
-        repoPresenter.loadRepos(userName, listPage)
+        repoPresenter.loadRepos(userName, listPage, this)
     }
 
     override fun getPagePreventionForEnd(): Int {

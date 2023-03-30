@@ -1,8 +1,9 @@
 package ui.graph_screen
 
+import android.content.Context
 import com.example.githubstars.R
 import data.repository.DataRepository
-import domain.entity.period_state.PeriodState
+import domain.data.period_state.PeriodState
 import kotlinx.coroutines.launch
 import moxy.presenterScope
 import ui.base.BasePresenter
@@ -11,6 +12,7 @@ import java.time.temporal.ChronoUnit
 
 
 class GraphPresenter(
+    private val context: Context,
     private val userName: String,
     private val repoName: String,
     private val stargazerCount: Int,
@@ -36,7 +38,7 @@ class GraphPresenter(
     fun getStarsData() = presenterScope.launch{
         viewState.setLoading(true)
             try {
-                val graphResponse = repository.getGraphData(
+                val graphResponse = repository.getGraphData(context,
                     currentPeriodState, userName, repoName, stargazerCount, comparableDate
                 )
                 viewState.setLoading(false)
